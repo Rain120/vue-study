@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Vue Demo</title>
+  <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+  <style>
+    body {
+      margin-left: 50px;
+    }
+
+    .fade-enter-active, .fade-leave-active {
+      transition: opacity .5s;
+    }
+    
+    .fade-enter, .fade-leave-to {
+      opacity: 0;
+    }
+
+    .slide-fade-enter-active{
+      transition: all .3s ease;
+    }
+
+    .slide-fade-leave-active  {
+      transition: all .8s cubic-bezier(1.0, .5, .8, 1.0);
+    }
+
+    .slide-fade-enter, .slide-fade-leave-to {
+      transform: translateX(20px);
+      opacity: 0;
+    }
+
+    .bounce-enter-active {
+      animation: bounce-in .5s;
+    }
+
+    .bounce-leave-active {
+      animation: bounce-in .5s reverse;
+    }
+
+    @keyframes bounce-in {
+      0% {
+        transform: scale(0);
+      }
+
+      50% {
+        transform: scale(1.5);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .component-fade-enter-active, .component-fade-leave-active {
+      transition: opacity .5s;
+    }
+    
+    .component-fade-enter, .component-fade-leave-to {
+      opacity: 0;
+    }
+
+    .list-item {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .list-enter-active, .list-leave-active {
+      transition: all 1s;
+    }
+
+    .list-enter, .list-leave-to {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .flip-list-move {
+      transition: transform 1s;
+    } 
+
+    .list-complete-item {
+      transition: all 1s;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .list-complete-enter, .list-complete-leave-to{
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .list-complete-leave-active {
+      position: absolute;
+    }
+
+    /* Lazy Sudoku */
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 260px;
+      margin-top: 10px;
+    }
+
+    .cell {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 25px;
+      height: 25px;
+      border: 1px solid #aaa;
+      margin-right: -1px;
+      margin-bottom: -1px;
+    }
+
+    .cell:nth-child(3n) {
+      margin-right: 0;
+    }
+
+    .cell:nth-child(27n) {
+      margin-bottom: 0;
+    }
+
+    .cell-move {
+      transition: transform 1s;
+    }  
+
+    svg { 
+      display: block; 
+    }
+
+    polygon { 
+      fill: #41B883; 
+    }
+
+    circle {
+      fill: transparent;
+      stroke: #35495E;
+    }
+
+    input[type="range"] {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <h4>初始化Vue</h4>
+  <div id="app">
+    {{msg.data}}
+  </div>
+
+  <h4>v-bind的特性称为指令</h4>
+  <div id="app-2">
+    <span v-bind:title="msg">鼠标悬停几秒查看此处动态绑定的提示信息</span>
+  </div>
+
+  <h4>条件与循环</h4>
+  <div id="app-3">
+    <p v-if="seen">现在你看到我了</p>
+    <p v-if="cannotSeen">现在你看不到我了</p>
+  </div>
+
+  <div id="app-4">
+    <p>What's I want to do?</p>
+    <ol>
+      <li v-for="item in todos">{{item.text}}</li>
+    </ol>
+  </div>
+
+  <h4>处理用户输入v-on</h4>
+  <div id="app-5">
+    <p>{{ msg }}</p>
+    <button v-on:click="reverseMsg()">逆转信息</button>
+  </div>
+  <div id="app-6">
+    <h4>Input</h4>
+    <p>正常input</p>
+    <label for="normal">Normal</label>&nbsp;&nbsp;
+    <input v-model="msg" />
+    <p>{{msg}}</p>
+    <p>输入框的focus离开才更新</p>
+    <label for="lazy">Lazy</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input v-model.lazy="msgLazy" />
+    <p> {{ msgLazy }} </p>
+    <p>自动将用户的输入值转为数值类型</p>
+    <label for="number">Number</label>
+    <input v-model.number="msgNumber" />
+    <p> {{ msgNumber }} </p>
+    <p>自动过滤用户输入的首尾空白字符</p>
+    <label for="trim">Trim</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input v-model.trim="msgTrim" />
+    <p> {{ msgTrim }} </p>
+    <h4>Multiline message is:</h4>
+    <textarea v-model="message" placeholder="add multiple lines"></textarea>
+    <p style="white-space: pre-line;">{{ message }}</p>
+  </div>
+
+  <h4>组件化应用构建</h4>
+  <div id="app-7">
+    <ol>
+      <todo-item 
+        v-for="item in groceryList"
+        v-bind:todo="item"
+        v-bind:key="item.id">
+      </todo-item>
+    </ol>
+  </div>
+
+  <div id="watch-example">
+    <p>
+      Ask a yes/no question:
+      <input  v-model="question" />
+    </p>
+    <p>{{ answer }}</p>
+  </div>
+
+  <div id="todo-list-example">
+    <input v-model="newTodoText" @keyup.enter="addNewTodo" placeholder="Add a todo" />
+    <ul>
+      <li is="todo-items" v-for="(todo, index) in todos" :key="index" :title="todo.title" @remove="todos.splice(index, 1)" ></li>
+    </ul>
+  </div>
+
+  <div id="example-1">
+    <button @click="counter++" >Add 1</button>
+    <p>The button above has been clicked {{ counter }} times.</p>
+  </div>
+
+  <div id="example-2">
+    <button @click="greet" >Greet</button>
+    <button @click="warn('Form cannot be submitted yet.', $event)" >Submit</button>
+  </div>
+
+  <div id="example-3">
+    <h4>单个复选框</h4>
+    <input type="checkbox" id="checkbox" v-model="checked" >
+    <label for="checkbox"> {{ checked }} </label>
+    <h4>多个复选框</h4>
+    <input type="checkbox" id="Jack" value="Jack" v-model="checkedNames" >
+    <label for="Jack">Jack</label>
+    <input type="checkbox" id="Jhon" value="Jhon" v-model="checkedNames" >
+    <label for="Jhon">Jhon</label>
+    <input type="checkbox" id="James" value="James" v-model="checkedNames" >
+    <label for="James">James</label>
+    <br>
+    <span>Checked Names: {{ checkedNames }} </span>
+  </div>
+
+  <div id="example-4">
+    <h4>单选按钮</h4>
+    <input type="radio" id="male" value="male" v-model="picked" >
+    <label for="male">male</label>
+    <br>
+    <input type="radio" id="female" value="female" v-model="picked" >
+    <label for="female">female</label>
+    <br>
+    <span> Picked: {{ picked }} </span>
+  </div>
+
+  <div id="example-5">
+    <h4>单选选择框</h4>
+    <select v-model="selected" >
+      <option disabled value="">请选择</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+      <option value="D">D</option>
+    </select>
+    <br>
+    <span> Selected: {{ selected }} </span>
+    <br>
+    <select v-model="selectedVFor" >
+        <option v-for="(option, index) in options" :key="index" :value="option.value" > {{ option.text }} </option>
+      </select>
+    <br>
+    <span> selectedVFor: {{ selectedVFor }} </span>
+  </div>
+
+  <div id="example-6">
+    <h4>多选选择框(按住Ctrl多选)</h4>
+    <select multiple style="width: 50px" v-model="selected" >
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+      <option value="D">D</option>
+    </select>
+    <br>
+    <span> Selected: {{ selected }} </span>
+  </div>
+
+  <div id="example-7">
+    <h4>自定义组件</h4>
+    <simple-counter></simple-counter>
+    <simple-counter></simple-counter>
+    <simple-counter></simple-counter>
+    <br>
+    <span>父子组件之间的信息传递<br>prop向下传递(父组件通过props向子组件发送数据)<br>事件向上传递(子组件通过事件向父组件发送消息)</span>
+    <br>
+    <input v-model="parentMsg" >
+    <br>
+    <child :my-message="parentMsg" ></child>
+  </div>
+
+  <div id="example-8">
+    <bs-date-input data-3d-date-picker="true" class="date-picker-theme-dark" ></bs-date-input>
+  </div>
+
+  <div id="counter-event-example">
+    <button-example @increment="incrementTotal" ></button-example>&nbsp;+&nbsp;
+    <button-example @increment="incrementTotal" ></button-example>&nbsp;=
+    <span> {{ total }} </span>
+  </div>
+
+  <h4>单元素/组件的过渡</h4>
+  <div id="transition-demo" >
+    <button @click="show = !show" >Toggle</button>
+    <transition name="fade" >
+      <p v-if="show" >show</p>
+    </transition>
+  </div>
+
+  <h4>CSS过渡</h4>
+  <div id="transition-demo1" >
+    <button @click="show = !show" >Toggle Render</button>
+    <transition name="slide-fade" >
+      <p v-if="show" >show</p>
+    </transition>
+  </div>
+
+  <h4>CSS动画</h4>
+  <div id="transition-demo2" >
+    <button @click="show = !show" >Toggle Show</button>
+    <transition name="bounce" >
+      <p v-if="show" >Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eos in nam perspiciatis obcaecati deserunt, corporis quae aliquid sapiente maiores corrupti iusto autem ex sed temporibus dolor quidem, consectetur recusandae aut.</p>
+    </transition>
+  </div>
+
+  <h4>自定义过渡的类名</h4>
+  <div id="transition-demo3" >
+    <button @click="show = !show" >Toggle Render</button>
+    <transition name="custom-classes-transition" enter-active-class="animated tada" leave-active-class="animated bounceOutRight" >
+      <p v-if="show" >show</p>
+    </transition>
+  </div>
+
+  <h4>使用 Velocity.js 的简单例子</h4>
+  <a href="http://www.mrfront.com/docs/velocity.js/" target="_blank" title="Velocity.js" >Velocity.js</a>
+  <div id="transition-demo4" >
+    <button @click="show = !show" >Toggle</button>
+    <transition @before-enter="boforeEnter" @enter="enter" @leave="leave" :css="false" >
+    <p v-if="show" >show</p>
+    </transition>
+  </div>
+
+  <h4>多个组件的过渡</h4>
+  <div id="transition-demo5" >
+    <input type="radio" value="a" id="a" v-model="val"><label for="A">A</label>
+    <input type="radio" value="b" id="b" v-model="val"><label for="B">B</label>
+    <input type="radio" value="c" id="c" v-model="val"><label for="C">C</label>
+    <input type="radio" value="d" id="d" v-model="val"><label for="D">D</label>
+    <span v-show="false" >{{ views }}</span>
+    <transition name="component-fade" mode="out-in" >
+      <component :is="view"></component>
+    </transition>
+  </div>
+
+  <h4>列表的进入/离开过渡</h4>
+  <div id="list-demo" class="demo">
+    <button @click="add" >Add</button>
+    <button @click="remove" >Remove</button>
+    <transition-group name="list" tag="p" >
+      <span v-for="item in items" :key="item" class="list-item" > {{ item }} </span>
+    </transition-group>
+  </div>
+
+  <h4>列表的排序过渡</h4>
+  <div id="flip-list-demo" class="demo">
+    <button @click="shuffle" >Shuffle</button>
+    <transition-group name="flip-list" tag="ul" >
+      <li v-for="item in items" :key="item" > {{ item }} </li>
+    </transition-group>
+  </div>
+
+  <h4>列表的进入/离开过渡&&列表的排序过渡</h4>
+  <div id="list-complete-demo" class="demo">
+    <button @click="add" >Add</button>
+    <button @click="remove" >Remove</button>
+    <button @click="shuffle" >Shuffle</button>
+    <transition-group name="list-complete" tag="p" >
+      <span v-for="item in items" :key="item" class="list-complete-item" > {{ item }} </span>
+    </transition-group>
+  </div>
+
+  <h4>Lazy Sudoku</h4>
+  <div id="sudoku-demo" class="demo">
+    <button @click="shuffle">
+      Shuffle
+    </button>
+    <transition-group name="cell" tag="div" class="container">
+      <div v-for="cell in cells" :key="cell.id" class="cell">
+        {{ cell.number }}
+      </div>
+    </transition-group>
+  </div>
+
+  <h4>列表的交错过渡</h4>
+  <div id="staggered-list-demo">
+    <span>请输入你要搜索的名字：</span><input v-model="query" >
+    <transition-group 
+      name="staggered-fade" 
+      tag="ul"
+      :css="false"
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @leave="leave" >
+      <li v-for="(item, index) in computedList" :key="item.msg" :data-index="index" > {{ item.msg }} </li>
+    </transition-group>
+  </div>
+
+  <h4>动态过渡</h4>
+  <div id="dynamic-fade-demo" class="demo">
+    Fade In: <input type="range" v-model="fadeInDuration" min="0" :max="maxFadeDuration" >
+    Fade Out: <input type="range" v-model="fadeOutDuration" min="0" :max="maxFadeDuration" >
+    <transition :css="false" @before-enter="beforeEnter" @enter="enter" @leave="leave" >
+      <p v-if="show" >Show</p>
+    </transition>
+    <button v-if="stop" @click="stop = false; show = false" >Start Animating</button>
+    <button v-else @click="stop = true" >Stop it!</button>
+  </div>
+
+  <h4>状态动画与观察者</h4>
+  <div id="animated-number-demo">
+    <input type="number" v-model.number="number" step="20" >
+    <p> {{ animatedNumber }} </p>
+  </div>
+
+  <div id="color-demo"  style="margin-top: 20px;"  >
+    <input placeholder="Enter a color" v-model="colorQuery" @keyup.enter="updateColor" >
+    <button @click="updateColor" >Update</button>
+    <p>Preview:</p>
+    <span :style="{ backgroundColor: tweenedCSSColor}" style="width: 50px; height: 50px; display: inline-block;" ></span>
+    <p> {{ tweenedCSSColor }} </p>
+  </div>
+
+  <h4>动态状态过渡</h4>
+  <div id="svg-demo" >
+    <svg width="200" height="200">
+      <polygon :points="points"></polygon>
+      <circle cx="100" cy="100" r="90"></circle>
+    </svg>
+    <label>Sides: {{ sides }}</label>
+    <input type="range" min="3" max="500" v-model.number="sides" >
+    <label>Minimum Radius: {{ minRadius }}%</label>
+    <input type="range" min="0" max="90" v-model.number="minRadius" >
+    <label>Update Interval: {{ updateInterval }} milliseconds</label>
+    <input type="range" min="10" max="2000" v-model.number="updateInterval" >
+  </div>
+
+  <h4>把过渡放到组件里</h4>
+  <div id="add-demo">
+    <input type="number" v-model.number="firstNumber" step="20" > + 
+    <input type="number" v-model.number="secondNumber" step="20" > =
+    {{ result }}
+    <p>
+      <animated-integer :value="firstNumber" ></animated-integer> + 
+      <animated-integer :value="secondNumber" ></animated-integer> =
+      <animated-integer :value="result" ></animated-integer>
+    </p>
+  </div>
+
+  <h4>自定义指令</h4>
+  <span>自动获取焦点的input</span>
+  <div id="self-directives-demo">
+    <input v-focus v-model="val" >
+    <br>
+    <span> {{ val }} </span>
+  </div>
+
+  <h4>钩子函数参数</h4>
+  <div>
+    <b>指令钩子函数会被传入以下参数：</b>
+    <ul>
+      <li>el：指令所绑定的元素，可以用来直接操作 DOM 。</li>
+      <li>binding：一个对象，包含以下属性：</li>
+      <ul>
+        <li>name：指令名，不包括 v- 前缀。</li>
+        <li>value：指令的绑定值，例如：v-my-directive="1 + 1" 中，绑定值为 2。</li>
+        <li>oldValue：指令绑定的前一个值，仅在 update 和 componentUpdated 钩子中可用。无论值是否改变都可用。</li>
+        <li>expression：字符串形式的指令表达式。例如 v-my-directive="1 + 1" 中，表达式为 "1 + 1"。</li>
+        <li>arg：传给指令的参数，可选。例如 v-my-directive:foo 中，参数为 "foo"。</li>
+        <li>modifiers：一个包含修饰符的对象。例如：v-my-directive.foo.bar 中，修饰符对象为 { foo: true, bar: true }。</li>
+      </ul> 
+      <li>vnode：Vue 编译生成的虚拟节点。移步 VNode API 来了解更多详情。</li>
+      <li>oldVnode：上一个虚拟节点，仅在 update 和 componentUpdated 钩子中可用。</li>
+    </ul>    
+  </div>
+  <div id="hook-arguments-example" v-demo:foo.a.b="message" ></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
+  <script src="https://cdn.bootcss.com/vue/2.5.13/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tween.js@16.3.4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/color-js@1.0.3"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenLite.min.js"></script>
+  <script>
+
+    var msg = {
+      data: "Hello Vue!"
+    }
+
+    var app = new Vue({
+      el: '#app',
+      data: {
+        msg: msg
+      }
+    })
+
+    var app2 = new Vue({
+      el: '#app-2',
+      data: {
+        msg: '页面加载于' + new Date().toLocaleString()
+      }
+    })
+
+    var app3 = new Vue({
+      el: '#app-3',
+      data: {
+        seen: true,
+        cannotSeen: false
+      }
+    })
+
+    var app4 = new Vue({
+      el: '#app-4',
+      data: {
+        todos: [
+          { text: 'JS' },
+          { text: 'Vue' },
+          { text: '你猜我要干什么' }
+        ]
+      }
+    })
+
+    var app5 = new Vue({
+      el: '#app-5',
+      data: {
+        msg: 'Hello, I\'m Rainy'
+      },
+      methods: {
+        reverseMsg() {
+          this.msg = this.msg.split('').reverse().join('')
+        }
+      }
+    })
+
+    var app6 = new Vue({
+      el: '#app-6',
+      data: {
+        msg: "Rainy",
+        msgLazy: '',
+        msgNumber: '',
+        msgTrim: '',
+        message: ''
+      }
+    })
+
+    Vue.component('todo-item', {
+      props: ['todo'],
+      template: '<li>{{ todo.text}} </li>'
+    })
+    var app7 = new Vue({
+      el: '#app-7',
+      data: {
+        groceryList: [
+          { id: 0, text: '蔬菜' },
+          { id: 1, text: '奶酪' },
+          { id: 2, text: '你肯定不知道我还要吃什么吧' },
+        ]
+      }
+    })
+
+    var watchExampleVM  = new Vue({
+      el: '#watch-example',
+      data: {
+        question: '',
+        answer: 'I cannot give you an answer until you ask a question!'
+      },
+      watch: {
+        question(newQuestion, oldQuestion) {
+          this.answer = 'Waiting for you to stop typing...';
+          this.getAnswer();
+        }
+      },
+      methods: {
+        getAnswer: _.debounce(
+          function() {
+            if(this.question.indexOf('?') === -1) {
+              this.answer = 'Questions usually contain a question mark. ;-';
+              return;
+            }
+
+            this.answer = 'Thinking...';
+            var vm = this;
+            axios.get("https://yesno.wtf/api").then(function(response) {
+              vm.answer = _.capitalize(response.data.answer);
+            }).catch((error) => {
+              vm.answer = "Error! Could not reach the API. " + error;
+            })
+          }, 500 )
+      }
+    })
+
+    Vue.component('todo-items', {
+      template: `
+        <li>
+          {{title}}
+          <button @click="$emit('remove')">X</button>
+        </li>
+      `,
+      props: ['title']
+    })
+
+    var todoListVM = new Vue({
+      el: '#todo-list-example',
+      data: {
+        newTodoText:'',
+        todos: [
+          {
+            id: 1,
+            title: 'JS'
+          }, {
+            id: 2,
+            title: 'Vue'
+          }, {
+            id: 3,
+            title: 'CSS'
+          }
+        ],
+        nextTodoId: 4
+      },
+      methods: {
+        addNewTodo() {
+          this.todos.push({
+            id: this.nextTodoId++,
+            title: this.newTodoText
+          })
+          console.table(this.todos)
+          this.newTodoText = ''
+        }
+      }
+    })
+
+    var example1 = new Vue({
+      el: '#example-1',
+      data: {
+        counter: 0
+      }
+    })
+    
+    var example2 = new Vue({
+      el: '#example-2',
+      data: {
+        name: "Rainy"
+      },
+      methods:{
+        greet(event) {
+          alert(`Hello ${this.name} !`);
+          // `event` 是原生 DOM 事件
+          if(event) {
+            alert(event.target.tagName.toLowerCase());
+          }
+        },
+        warn(message, event) {
+          if(event) {
+            event.preventDefault();
+          }
+          alert(message);
+        }
+      }
+    }) 
+
+    var example3 = new Vue({
+      el: '#example-3',
+      data: {
+        checked: false,
+        checkedNames: []
+      }
+    })
+
+    var example4 = new Vue({
+      el: '#example-4',
+      data: {
+        picked: ''
+      }
+    })
+
+    var example5 = new Vue({
+      el: '#example-5',
+      data: {
+        selected: '',
+        selectedVFor: 'A',
+        options: [
+          { text: 'One', value: 'A' },
+          { text: 'Two', value: 'B' },
+          { text: 'Three', value: 'C' },
+          { text: 'Four', value: 'D' }
+        ]
+      }
+    })
+
+    var example6 = new Vue({
+      el: '#example-6',
+      data: {
+        selected: []
+      }
+    })
+
+    Vue.component('simple-counter', {
+      template: `<button @click="counter++"> {{ counter }} </button>`,
+      data() {
+        return {
+          counter: 0
+        }
+      }
+    })
+
+    Vue.component('child', {
+      props: ['myMessage'],
+      template: `<span>{{ myMessage }}</span>`
+    })
+
+    var example7 = new Vue({
+      el: '#example-7',
+      data: {
+        parentMsg: '父子组件传递数据'
+      }
+    })
+
+    Vue.component('bs-date-input', {
+      template: `<input type="date" class="form-control" style="width: 200px;" >`
+    })
+    
+
+    var example8 = new Vue({
+      el: '#example-8'
+    })
+
+    Vue.component('button-example', {
+      template: `<button @click="incrementCounter"> {{ counter }} </button>`,
+      data() {
+        return {
+          counter: 0
+        }
+      },
+      methods: {
+        incrementCounter() {
+          this.counter++;
+          this.$emit('increment')
+        }
+      }
+    })
+
+    var counterEventExample = new Vue({
+      el: '#counter-event-example',
+      data: {
+        total: 0
+      },
+      methods: {
+        incrementTotal() {
+          this.total ++ ;
+        }
+      }
+    })
+
+    var transitionDemo = new Vue({
+      el: '#transition-demo',
+      data: {
+        show: true
+      }
+    })
+
+    var transitionDemo1 = new Vue({
+      el: '#transition-demo1',
+      data: {
+        show: true
+      }
+    })
+
+    var transitionDemo2 = new Vue({
+      el: '#transition-demo2',
+      data: {
+        show: true
+      }
+    })
+
+    var transitionDemo3 = new Vue({
+      el: '#transition-demo3',
+      data: {
+        show: true
+      }
+    })
+
+    var transitionDemo4 = new Vue({
+      el: '#transition-demo4',
+      data: {
+        show: false
+      },
+      methods: {
+        boforeEnter(el) {
+          el.style.opacity = 0;
+          el.style.transformOrigin = 'left';
+        },
+        enter(el, done) {
+          Velocity(el, { opacity: 1, fontSize: '1.4em' }, { duration: 300 })
+          Velocity(el, { fontSize: '1em' }, { complete: done })
+        },
+        leave(el, done) {
+          Velocity(el, { translateX: '15px', rotateZ: '50deg' }, { duration: 600 })
+          Velocity(el, { rotateZ: '100deg' }, { loop: 2 })
+          Velocity(el, {
+            rotateZ: '45deg',
+            translateY: '30px',
+            translateX: '30px',
+            opacity: 0
+          }, { complete: done })
+            }
+      }
+    })
+
+    var transitionDemo5 = new Vue({
+      el: '#transition-demo5',
+      data: {
+        view: 'v-a',
+        val: 'a'
+      },
+      computed: {
+        views() {
+          this.view = 'v-' + this.val;
+          return this.view;
+        }
+      },
+      components: {
+        'v-a': {
+          template: `<div>Component A</div>`
+        },
+        'v-b': {
+          template: `<div>Component B</div>`
+        },
+        'v-c': {
+          template: `<div>Component C</div>`
+        },
+        'v-d': {
+          template: `<div>Component D</div>`
+        },
+      }
+    })
+
+    var listDemo = new Vue({
+      el: '#list-demo',
+      data: {
+        items: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        nextNum: 10
+      },
+      methods: {
+        randomIndex() {
+          return Math.floor(Math.random() * this.items.length);
+        },
+        add() {
+          this.items.splice(this.randomIndex(), 0, this.nextNum++);
+        },
+        remove() {
+          this.items.splice(this.randomIndex(), 1);
+        }
+      }
+    })
+
+    var flipListDeom = new Vue({
+      el: '#flip-list-demo',
+      data: {
+        items: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      },
+      methods: {
+        shuffle() {
+          this.items = _.shuffle(this.items);
+        }
+      }
+    })
+
+    var listCompleteDemo = new Vue({
+      el: '#list-complete-demo',
+      data: {
+        items: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        nextNum: 10
+      },
+      methods: {
+        randomIndex() {
+          return Math.floor(Math.random() * this.items.length);
+        },
+        add() {
+          this.items.splice(this.randomIndex(), 0, this.nextNum++);
+        },
+        remove() {
+          this.items.splice(this.randomIndex(), 1);
+        },
+        shuffle() {
+          this.items = _.shuffle(this.items);
+        }
+      }
+    })
+
+    new Vue({
+      el: '#sudoku-demo',
+      data: {
+        cells: Array.apply(null, { length: 81 })
+          .map(function (_, index) { 
+            return {
+              id: index,
+              number: index % 9 + 1
+            }
+          })
+      },
+      methods: {
+        shuffle: function () {
+          this.cells = _.shuffle(this.cells)
+        }
+      }
+    })
+
+    new Vue({
+      el: '#staggered-list-demo',
+      data: {
+        query: '',
+        list: [
+          { msg: 'Bruce Lee' },
+          { msg: 'Jackie Chan' },
+          { msg: 'Chuck Norris' },
+          { msg: 'Jet Li' },
+          { msg: 'Kung Fury' }
+        ]
+      },
+      computed: {
+        computedList() {
+          var vm = this;
+          return this.list.filter((item) => {
+            return item.msg.toLowerCase().includes(vm.query.toLowerCase());
+          })
+        }
+      },
+      methods: {
+        beforeEnter(el) {
+          el.style.opacity = 0;
+          el.style.height = 0;
+        },
+        enter(el, done){
+          var delay = el.dataset.index * 150
+          setTimeout(function () {
+            Velocity(
+              el,
+              { opacity: 1, height: '1.6em' },
+              { complete: done }
+            )
+          }, delay);
+        },
+        leave(el, done){
+          var delay = el.dataset.index * 150
+          setTimeout(function () {
+            Velocity(
+              el,
+              { opacity: 0, height: 0 },
+              { complete: done }
+            )
+          }, delay);
+        }
+      }
+    })
+
+    new Vue({
+      el: '#dynamic-fade-demo',
+      data: {
+        show: true,
+        fadeInDuration: 1000,
+        fadeOutDuration: 1000,
+        maxFadeDuration: 1500,
+        stop: true
+      },
+      mounted() {
+        this.show = false;
+      },
+      methods: {
+        beforeEnter(el) {
+          el.style.opacity = 0
+        },
+        enter(el, done) {
+          var vm = this
+          Velocity(el,
+            { opacity: 1 },
+            {
+              duration: this.fadeInDuration,
+              complete: function () {
+                done()
+                if (!vm.stop) vm.show = false
+              }
+            }
+          )
+        },
+        leave(el, done) {
+          var vm = this
+          Velocity(el,
+            { opacity: 0 },
+            {
+              duration: this.fadeOutDuration,
+              complete: function () {
+                done()
+                vm.show = true
+              }
+            }
+          )
+        }
+      }
+    })
+
+    new Vue({
+      el: '#animated-number-demo',
+      data: {
+        number: 0,
+        animatedNumber: 0
+      },
+      watch: {
+        number(newValue, oldValue) {
+          var vm = this;
+          function animate() {
+            if (TWEEN.update()) {
+              requestAnimationFrame(animate);
+            }
+          }
+
+          new TWEEN.Tween({ tweeningValue: oldValue })
+              .easing( TWEEN.Easing.Quadratic.Out )
+              .to( { tweeningValue: newValue }, 500 )
+              .onUpdate( function() {
+                vm.animatedNumber = this.tweeningValue.toFixed(0)
+              })
+              .start()
+
+          animate();
+        }
+      }
+    })
+
+    var Color = net.brehaut.Color;
+    new Vue({
+      el: '#color-demo',
+      data: {
+        colorQuery: '',
+        color: {
+          red: 0,
+          green: 0,
+          blue: 0,
+          alpha: 1
+        },
+        tweenedColor: {}
+      },
+      created() {
+        this.tweenedColor = Object.assign({}, this.color);
+      },
+      watch: {
+        color() {
+          function animate() {
+            if(TWEEN.update()) {
+              requestAnimationFrame(animate);
+            }
+          }
+
+          new TWEEN.Tween(this.tweenedColor).to(this.color, 750).start();
+
+          animate();
+        }
+      },
+      computed: {
+        tweenedCSSColor() {
+          return new Color({
+            red: this.tweenedColor.red,
+            green: this.tweenedColor.green,
+            blue: this.tweenedColor.blue,
+            alpha: this.tweenedColor.alpha,
+          }).toCSS();
+        }
+      },
+      methods: {
+        updateColor() {
+          this.color = new Color(this.colorQuery).toRGB();
+          this.colorQuery = '';
+        }
+      }
+    })
+
+    function valueToPoint(value, index, total) {
+      var x = 0;
+      var y = -value * .9;
+      var angle = Math.PI * 2 / total * index;
+      var cos = Math.cos(angle);
+      var sin = Math.sin(angle);
+      var tx = x * cos - y * sin + 100;
+      var ty = x * sin + y * cos + 100;
+      return {
+        x: tx,
+        y: ty
+      }
+    }
+
+    function generatePoints(stats) {
+      var total = stats.length;
+      return stats.map(function(stat, index) {
+        var point = valueToPoint(stat, index, total);
+        return point.x + ',' + point.y;
+      }).join(' ')
+    }
+
+    new Vue({
+      el: '#svg-demo',
+      data: function () {
+        var defaultSides = 10
+        var stats = Array.apply(null, { length: defaultSides })
+          .map(function () { return 100 })
+        return {
+          stats: stats,
+          points: generatePoints(stats),
+          sides: defaultSides,
+          minRadius: 50,
+          interval: null,
+          updateInterval: 500
+        }
+      },
+      watch: {
+        sides: function (newSides, oldSides) {
+          var sidesDifference = newSides - oldSides
+          if (sidesDifference > 0) {
+            for (var i = 1; i <= sidesDifference; i++) {
+              this.stats.push(this.newRandomValue())
+            }
+          } else {
+            var absoluteSidesDifference = Math.abs(sidesDifference)
+            for (var i = 1; i <= absoluteSidesDifference; i++) {
+              this.stats.shift()
+            }
+          }
+        },
+        stats: function (newStats) {
+          TweenLite.to(
+            this.$data, 
+            this.updateInterval / 1000, 
+            { points: generatePoints(newStats) }
+          )
+        },
+        updateInterval: function () {
+          this.resetInterval()
+        }
+      },
+      mounted: function () {
+        this.resetInterval()
+      },
+      methods: {
+        randomizeStats: function () {
+          var vm = this
+          this.stats = this.stats.map(function () {
+            return vm.newRandomValue()
+          })
+        },
+        newRandomValue: function () {
+          return Math.ceil(this.minRadius + Math.random() * (100 - this.minRadius))
+        },
+        resetInterval: function () {
+          var vm = this
+          clearInterval(this.interval)
+          this.randomizeStats()
+          this.interval = setInterval(function () { 
+            vm.randomizeStats()
+          }, this.updateInterval)
+        }
+      }
+    })
+
+    Vue.component('animated-integer', {
+      template: `<span> {{ tweeningValue }} </span>`,
+      props: {
+        value: {
+          type: Number,
+          required: true
+        }
+      },
+      data() {
+        return {
+          tweeningValue: 0          
+        }
+      },
+      watch: {
+        value(newValue, oldValue) {
+          this.tween(oldValue, newValue);
+        }
+      },
+      mounted() {
+        this.tween(0, this.value);
+      },
+      methods: {
+        tween(startValue, endValue) {
+          var vm = this;
+          function animate() {
+            if(TWEEN.update()) {
+              requestAnimationFrame(animate);
+            }
+          }
+
+          new TWEEN.Tween({ tweeningValue: startValue })
+                   .to({ tweeningValue: endValue }, 500)
+                   .onUpdate(function() {
+                     vm.tweeningValue = this.tweeningValue.toFixed(0)
+                   })
+                   .start()
+
+          animate();
+        }
+      }
+    })
+
+    new Vue({
+      el: '#add-demo',
+      data: {
+        firstNumber: 0,
+        secondNumber: 0
+      },
+      computed: {
+        result() {
+          return this.firstNumber + this.secondNumber;
+        }
+      }
+    })
+
+    var myMixin = {
+      created() {
+        this.hello();
+      },
+      methods: {
+        hello() {
+          console.info("Hello!!");
+        }
+      }
+    }
+
+    var Component = Vue.extend({
+      mixins: [myMixin]
+    })
+
+    var component = new Component();
+
+    var mixin = {
+      created() {
+        console.info('混合对象的钩子被调用');
+      }
+    }
+
+    new Vue({
+      mixins: [mixin],
+      created() {
+        console.info('组件钩子被调用')
+      }
+    })
+
+    var mixin1 = {
+      methods: {
+        bar() {
+          console.info('bar');
+        },
+        conflicting() {
+          console.info('for mixin');
+        }
+      }
+    }
+
+    var vm = new Vue({
+      mixins: [mixin1],
+      methods: {
+        foo() {
+          console.info('foo');
+        },
+        conflicting() {
+          console.info('for self');
+        }
+      }
+    })
+
+    vm.bar(); // bar
+    vm.foo(); // foo
+    vm.conflicting(); // for self
+
+    new Vue({
+      el: '#self-directives-demo',
+      data() {
+        return {
+          val: 'Rainy'
+        }
+      },
+      directives: {
+        focus: {
+          inserted(el) {
+            el.focus();
+          }
+        }
+      }
+    })
+
+    Vue.directive('demo', {
+      bind(el, binding, vnode) {
+        var s = JSON.stringify;
+        el.innerHTML =
+          'name: '       + s(binding.name) + '<br>' +
+          'value: '      + s(binding.value) + '<br>' +
+          'expression: ' + s(binding.expression) + '<br>' +
+          'argument: '   + s(binding.arg) + '<br>' +
+          'modifiers: '  + s(binding.modifiers) + '<br>' +
+          'vnode keys: ' + Object.keys(vnode).join(', ');
+      }
+    })
+
+    new Vue({
+      el: '#hook-arguments-example',
+      data() {
+        return {
+          message: 'hello!'
+        }
+      }
+    })
+  </script>
+</body> 
+
+</html>
