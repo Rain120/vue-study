@@ -21,9 +21,11 @@
 
 export default {
   name: 'translateForm',
-  data: {
-  	textToTranslate: "",
-  	language: ""
+  data () {
+  	return {
+			textToTranslate: "",
+			language: ""
+		}
   },
   methods: {
   	formSubmit: function(event) {
