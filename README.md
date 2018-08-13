@@ -1,3 +1,10 @@
+[Vue实现左右菜单联动实现](https://rain120.github.io/2018/08/11/cascade-menu/)
+[代码](https://github.com/Rain120/vue-study/blob/master/my-project/src/components/cascad-menu.vue)
+
+[Vue之网易云音乐PC版轮播图的实现](https://rain120.github.io/2018/06/25/netease-slider/)
+[代码](https://github.com/Rain120/vue-study/blob/master/my-project/src/components/barousel.vue)
+
+
 Vuejs
 
 <h3>. Vue.js是什么</h3>
