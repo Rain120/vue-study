@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <cascad-menu :menus="menus"></cascad-menu>
+    <my-swiper />
+    <!-- <cascad-menu :menus="menus"></cascad-menu> -->
     <!-- <barousel
       class="barousel"
       :list="setData()"
@@ -35,10 +36,12 @@ import CascadMenu from './components/cascad-menu.vue'
 import Barousel from './components/barousel.vue'
 import TranslateForm from './components/TranslateForm'
 import TranslateOutput from './components/TranslateOutput'
+import MySwiper from './components/my-swiper'
 
 export default {
   name: 'app',
   components: {
+    MySwiper,
     TranslateForm,
     TranslateOutput,
     Barousel,

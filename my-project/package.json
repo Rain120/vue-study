@@ -59,7 +59,8 @@
     "webpack-hot-middleware": "^2.18.0",
     "webpack-merge": "^4.1.0",
     "sass-loader": "^6.0.6",
-    "stylus-loader": "^3.0.2"
+    "stylus-loader": "^3.0.2",
+    "swiper": "^4.4.1"
   },
   "engines": {
     "node": ">= 4.0.0",
