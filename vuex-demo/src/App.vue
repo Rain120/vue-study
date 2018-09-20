@@ -1,12 +1,16 @@
 <template>
   <div id="app">
-    <router-view/>
+    <recommend></recommend>
   </div>
 </template>
 
 <script>
+import Recommend from 'components/recommend'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    Recommend
+  }
 }
 </script>
 
